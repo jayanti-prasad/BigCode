@@ -42,6 +42,7 @@ class Tree:
         self.nodes = []
         self.nmap = {}
         self.anytree = None
+        self.visited = [] 
         self.__process__(tree, tree)
         self.__node_mapping__()
         self.anytree = self.__get_any_tree__()
@@ -53,12 +54,14 @@ class Tree:
         node_properties['hash'] = get_hash(node_properties)
         node_properties['parent'] = get_hash(get_node_properties(parent))
         node_properties['id'] =  self.id  
-        self.nodes.append(node_properties)
-        self.id = self.id + 1
-        num_children = len(tree.children)
-        for i in range(0, num_children):
-             if '@type' in tree.children[i].get_dict():
-                 self.__process__(tree, tree.children[i])
+        if node_properties['hash']  not in self.visited :
+            self.visited.append(node_properties['hash'])
+            self.nodes.append(node_properties)
+            self.id = self.id + 1
+            num_children = len(tree.children)
+            for i in range(0, num_children):
+                if '@type' in tree.children[i].get_dict():
+                    self.__process__(tree, tree.children[i])
 
     def __node_mapping__(self):
         for n in self.nodes:
