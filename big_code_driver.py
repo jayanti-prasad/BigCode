@@ -27,3 +27,6 @@ if __name__ == "__main__":
 
     for seq in ast_seq:
        print(seq)
+
+    for n in nodes:
+        print(n)

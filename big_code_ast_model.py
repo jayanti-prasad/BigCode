@@ -68,9 +68,7 @@ class Tree:
             self.nmap[n['hash']] = str(n['id'])
 
     def __get_any_tree__(self):
-        tnodes = []
-        for n in self.nodes:
-           tnodes.append("x")
+        tnodes = ["x"] * len(self.nodes)
         D = {}
         count = 0
         for n in self.nodes:
