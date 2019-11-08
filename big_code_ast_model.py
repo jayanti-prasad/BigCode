@@ -76,7 +76,7 @@ class Tree:
            else:
               parent = D[n['parent']]
            tnodes[count] = Node(self.nmap[n['hash']], parent,\
-               internalType=n['internal_type'], roles=n['roles'], token=n['token'],\
+               internal_type=n['internal_type'], roles=n['roles'], token=n['token'],\
                start_line=n['start_line'], end_line=n['end_line'])
            D[n['hash']] = tnodes[count]                
            count = count + 1
