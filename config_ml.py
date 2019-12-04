@@ -16,10 +16,17 @@ class ConfigML:
         os.makedirs(work_dir, exist_ok=True)
         return work_dir 
 
-     
-    def input_data__dir(self):
+    def input_data_dir(self):
         return  self.cfg_parser.get('settings', 'input_data_dir')
 
+    def log_file(self):
+          return  self.cfg_parser.get('log', 'log_file')
+
+    def log_level(self):
+          return  self.cfg_parser.get('log', 'log_level')
+
+    def log_to_console(self):
+          return  self.cfg_parser.getboolean('log', 'log_to_console')
 
     def output_dir(self):
         tmp_dir = self.workspace_dir() + os.sep + "output"
@@ -59,6 +66,10 @@ class ConfigML:
 
     def num_input_tokens(self):
         return  self.cfg_parser.getint('model-seq2seq', 'num_input_tokens')
+
+    
+    def latent_dim(self):
+        return  self.cfg_parser.getint('model-seq2seq', 'latent_dim')
 
     def num_output_tokens(self):
         return  self.cfg_parser.getint('model-seq2seq', 'num_output_tokens')
