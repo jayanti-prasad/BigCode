@@ -5,9 +5,6 @@ import os
 
 
 def get_logger(logger_name, log_dir, log_file, log_level='DEBUG', log_to_console=True):
-    # logging.basicConfig(filename = log_dir +  os.sep  + log_file, level = log_level,
-    #         filemode='w', format='%(name)s - %(asctime)s -%(levelname)s - %(message)s')
-
     root_logger = logging.getLogger(logger_name)
     root_logger.setLevel(log_level)
     handler = logging.handlers.RotatingFileHandler(log_dir + os.sep + log_file, maxBytes=10000000, backupCount=10,

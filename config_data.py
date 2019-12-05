@@ -14,7 +14,6 @@ class ConfigBigCode:
     def __init__(self, cfg_parser):
         self.cfg_parser = cfg_parser
         self.logfile = None
-
         self.logger = get_logger("big-code", self.log_dir(), self.log_file(),
             log_level=self.log_level(), log_to_console=True)
 

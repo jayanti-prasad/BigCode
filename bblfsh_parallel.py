@@ -2,51 +2,43 @@ from concurrent import futures
 import bblfsh
 import sys
 from joblib import Parallel, delayed
-from math import sqrt
+import pandas as pd 
 
 
-def get_tree (cfg, src_files):
-    client = bblfsh.BblfshClient("localhost:9432")
+def get_chuncks (data, np):
+    chunck_size = int(len(data)/np) 
+    chuncks = []
+    for i in range(np):
+        chunck_start =  i *  chunck_size
+        chunck_end = (i+1) * chunck_size
+        chuncks.append(data[chunck_start:chunck_end])
 
-    x = []  
+    return chuncks 
+
+
+def run (cfg, src_files):
+    client =  bblfsh.BblfshClient("localhost:9432")
+
+    df = pd.DataFrame(columns=['internal_type'])
+    x = []
+    count = 0
     for src_file in src_files:
-        tree = client.parse(src_file).ast
-        x.append(tree.internal_type)
-
-    return x
-
+        tree = client.parse(src_file).uast
+        #x.append(tree.internal_type)
+        df.loc[count] = [tree.internal_type]
+        count = count + 1 
+    return df
 
 if __name__ == "__main__":
-    #client = bblfsh.BblfshClient("localhost:9432")
+
 
     file_path = "/Users/jayanti/Codes/Programs/Java/examples/HelloWorld.java"
-    files = [file_path] * 1280 
-
-    n = len(files)
+    n = 1280 
     p = 8
+    files = [file_path] * n 
 
-    chunck_size = n /p 
-    
-    chuncks = []
-    for i in range(0, p):
-        chuncks.append(files[int(i*chunck_size):int((i+1)*chunck_size)])
+    chuncks = get_chuncks (files, p)
 
-    print(chuncks)
-
-
-    #for i in range(0, 64):
-    #    tree = client.parse(files[i]).ast
-    #    print(i, tree)
-
-    #x = [i for i in range(0,128)]
-    p = 8
-    r = 1280/p 
-
-    cfg = None
-    x= Parallel(n_jobs=8)(delayed(get_tree)(cfg, chuncks[i]) for i in range(p))
-
-
-    #results = Parallel(n_jobs=-1, verbose=1, backend="threading")(
-    #         map(delayed(myfun), arg_instances))
-
-
+    cfg = None 
+    y = Parallel(n_jobs=p)(delayed(run)(cfg, chuncks[i]) for i in range(p))
+        
