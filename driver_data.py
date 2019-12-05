@@ -27,9 +27,6 @@ def run(cfg, p):
     commits_data_file = cfg.output_dir() + os.sep + file_prefix + "_data" + ".csv"
     proj_log_file = file_prefix + ".log"
 
-    cfg.logger = logutil.get_logger("cmod_parallel_log", cfg.log_dir(), 
-        proj_log_file, cfg.log_level())
-
     if pathlib.Path(cfg.project_git_dir()).exists():
         cfg.logger.info("git repo found for project:" + p['project_name'])
     else:
@@ -77,11 +74,8 @@ if __name__ == "__main__":
             print('  {} = {}'.format(name, section[name]))
         print()
 
-
-    logger = logutil.get_logger('cmod_parallel',  cfg.log_dir(), 'cmod_paralle.log', cfg.log_level())
-
     if args.erase:
-        logger.info("Deleting output, scratch, log dirs")
+        cfg.logger.info("Deleting output, scratch, log dirs")
         shutil.rmtree(cfg.output_dir())  
         shutil.rmtree(cfg.scratch_dir())  
         shutil.rmtree(cfg.log_dir())  
@@ -90,7 +84,7 @@ if __name__ == "__main__":
     if cfg.projects_list_file():
         proj_list = cfg.get_projects()
     else:
-        logger.info("provide a git repos file created by github crawler [github_crawler.py] ")
+        cfg.logger.info("provide a git repos file created by github crawler [github_crawler.py] ")
         sys.exit()      
 
     for p in proj_list:
