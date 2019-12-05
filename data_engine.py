@@ -37,14 +37,14 @@ def write_ast_files(prev_ast, curr_ast, prev_file_name, curr_file_name, cfg):
 
 
 
-def get_commits_data(w, cfg, commits, return_dict):
+def get_commits_data(cfg, commits):
     repo = cfg.repo
     df = pd.DataFrame(columns=cfg.columns(), dtype=str)
     num_commits = len(commits)
     count = 0
-    cfg.logger.info("process id:" + str(w) + "number of commits:" + str(len(commits)))
 
     for i in range(0, num_commits):
+        
         D = {}
         D['project_name'] = cfg.proj['project_name']
         D['commit_msg'] = commits[i].summary
@@ -117,7 +117,7 @@ def get_commits_data(w, cfg, commits, return_dict):
                                         df.loc[count]=data 
                                         count = count + 1
 
-    cfg.logger.info("[commit_data] for thread " + str(w) + " number of rows in the data frame :" + str(count))
-    return_dict[w] = df 
-    return df 
+  
+    #cfg.logger.info("[commit_data] for thread " + str(w) + " number of rows in the data frame :" + str(count))
+    return None 
 

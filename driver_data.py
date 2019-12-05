@@ -10,6 +10,17 @@ import config_data
 from data_engine import get_commits_data 
 import git
 import shutil
+from joblib import Parallel, delayed
+
+def get_chuncks (cfg, data):
+    chunck_size = int(len(data)/cfg.num_processes())
+    chuncks = []
+    for i in range(cfg.num_processes()):
+        chunck_start =  i *  chunck_size
+        chunck_end = (i+1) * chunck_size
+        chuncks.append(data[chunck_start:chunck_end])
+
+    return chuncks
 
 
 def run(cfg, p):
@@ -46,8 +57,13 @@ def run(cfg, p):
         logger.info("commit data  file exists, not processing for project:" + p['project_name'])
     else:
         #df_commits_data = parallel_process(cfg, get_commits_data, commits)
-        df_commits_data = get_commits_data(0, cfg, commits, {})
+        #df_commits_data = get_commits_data(0, cfg, commits, {})
          
+        chuncks = get_chuncks (cfg, commits) 
+        print("chuncks:", chuncks)
+        df = Parallel(n_jobs=cfg.num_processes())(delayed(get_commits_data)(cfg, chuncks[i]) for i in range(cfg.num_processes()))
+
+
         df_commits_data.to_csv(commits_data_file, sep=',')
         logger.info("Commits data  written in :" + commits_data_file)
 
