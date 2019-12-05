@@ -8,13 +8,7 @@ if __name__ == "__main__":
   
    with open(sys.argv[1],"rb") as fp:
       ast = pickle.load(fp)
-
-
-   print(ast)
    nodes  = [node  for node in PreOrderIter(ast)]
-
-   #DotExporter(ast).to_picture("/User/jayanti/Desktop/" + os.sep + "tree.png")
    DotExporter(ast).to_picture("tree.png")
-  
-   for n in nodes:
+     for n in nodes:
        print(n)
