@@ -1,11 +1,13 @@
 import os
 import re
+import pickle
 import pandas as pd
 import numpy as np
-import pickle
 from unidiff import PatchSet
 from ast_model import Tree 
 from ast_diff import AstDiff 
+from importlib import reload
+import logging
 
 def get_filename(file_path, D , tag):
     filename = file_path.split('/')
@@ -37,13 +39,19 @@ def write_ast_files(prev_ast, curr_ast, prev_file_name, curr_file_name, cfg):
 
 
 
-def get_commits_data(cfg, commits):
+def get_commits_data(cfg, limits):
+
     repo = cfg.repo
     df = pd.DataFrame(columns=cfg.columns(), dtype=str)
-    num_commits = len(commits)
+    commits = list(cfg.repo.iter_commits())
+    [start, end] = limits 
+    num_commits = end-start 
+
+    worker_id = int(start / num_commits)  
+
     count = 0
 
-    for i in range(0, num_commits):
+    for i in range(limits[0], limits[1]):
         
         D = {}
         D['project_name'] = cfg.proj['project_name']
@@ -51,6 +59,7 @@ def get_commits_data(cfg, commits):
         D['commit_id'] = commits[i].hexsha
 
         cfg.logger.info("Processing [" + str(i) + "/" + str(num_commits) + "]: " + D['commit_id'])
+        print("Processing [" + str(worker_id) +":" + str(count) + "/" + str(num_commits) + "]: " + D['commit_id'])
     
         try:  
             diff = repo.git.diff(commits[i].hexsha, commits[i].hexsha+'^')
@@ -60,6 +69,7 @@ def get_commits_data(cfg, commits):
             cfg.logger.info("Failed to get diff :" + commits[i].hexsha)
             pass   
 
+        
         if len(patch_set) <=  cfg.max_files_changed() and diff:
             for p in patch_set:
                 if p.is_modified_file:
@@ -116,8 +126,8 @@ def get_commits_data(cfg, commits):
                      
                                         df.loc[count]=data 
                                         count = count + 1
-
+        
   
     #cfg.logger.info("[commit_data] for thread " + str(w) + " number of rows in the data frame :" + str(count))
-    return None 
+    return df 
 
