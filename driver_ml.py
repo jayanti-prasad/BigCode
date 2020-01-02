@@ -43,8 +43,3 @@ if __name__ == "__main__":
 
     h = M.fit_model(x_train, y_train)
 
-
-
-
-
-
