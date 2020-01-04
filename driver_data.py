@@ -50,7 +50,7 @@ def run(cfg, p):
     cfg.logger.info("Number of commits to process :" + str(len(commits)))
 
     if pathlib.Path(commits_data_file).exists():
-        logger.info("commit data  file exists, not processing for project:" + p['project_name'])
+        cfg.logger.info("commit data  file exists, not processing for project:" + p['project_name'])
     else:
         chuncks = get_chuncks (cfg, commits) 
 

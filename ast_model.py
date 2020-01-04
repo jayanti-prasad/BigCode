@@ -47,7 +47,8 @@ def get_node_properties (tree):
 class Tree:
 
     def __init__(self, source_file, cfg=None):
-        client = cfg.ast_client()
+        #client = cfg.ast_client()
+        client = bblfsh.BblfshClient('localhost:9432')
         tree = client.parse(source_file).uast  
         self.id = 0
         self.nodes = []

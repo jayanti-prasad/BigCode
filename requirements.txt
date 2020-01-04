@@ -1,3 +1,4 @@
+PyGithub==1.45
 keras==2.2.4
 tensorflow==2.0.0
 dill==0.3.1.1
