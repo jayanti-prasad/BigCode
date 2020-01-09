@@ -39,15 +39,15 @@
     
 # Running the code :
 
-    -  Review the input parameter files (data_input.ini and ml_input.ini) in 'config' directory.  
+    - Review the input parameter files (data_input.ini and ml_input.ini) in 'config' directory.  
 
     - (1) Get a list of repos by running the following [This is optional]
     
-     `$ python github_data_crawler.py --help`
+    > `$ python github_data_crawler.py --help`
     
     - (2) Process the giit data :
     
-     `$ python driver_data.py -c config/input_data.ini `
+    > `$ python driver_data.py -c config/input_data.ini `
     
     - (3) Launch the ML Pipeline 
     
