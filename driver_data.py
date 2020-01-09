@@ -30,8 +30,8 @@ def run(cfg, p):
     logging.shutdown()
     reload(logging)
 
-    p['project_name'] = p['project_url'].split('/')[-1] 
-    p['org_name'] = p['project_url'].split('/')[-2] 
+    p['project_name'] = p['git_url'].split('/')[-1] 
+    p['org_name'] = p['git_url'].split('/')[-2] 
 
     file_prefix = p['org_name'] + "_" + p['project_name']
 

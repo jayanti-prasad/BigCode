@@ -1,0 +1,1 @@
+python seq2seq_single_input.py -itn 100 -otn 100 -isl 40 -osl 50 -ldm 100 -n 10 -w output 
