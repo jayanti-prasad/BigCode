@@ -1,12 +1,17 @@
 # Big Code : What it is ?
   - It is prototype pipeline to apply machine learning on source code. It has five main programs:
+
       > A program to find repositories on Github on the basis of some criteria and dump the
         results in a csv file.
+
       > A program to process (get AST also using Babelfish) a git repo and write the output file
         in a csv file which can be feed to a neural network models.
+
       > A program to train a set of Neural Network Models (LSTM) on the basis of the data 
         created in the last step.
+
       > A program to get inference on the basis of the trained model.
+
       > A set of examples to demonstrate how to build neural network models. 
  
 # Requirements:
@@ -48,4 +53,11 @@
     
     > `$ python driver_ml.py -c config/input_ml.ini`
     
-   
+#  References :
+
+   >  https://doc.bblf.sh/
+  
+   > https://github.com/src-d/awesome-machine-learning-on-source-code 
+
+
+ 
