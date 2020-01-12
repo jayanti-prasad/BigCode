@@ -1,3 +1,16 @@
+# Introduction : 
+    In general a software  package consists of a set of computer programs written in a  
+    high level programming language such as C++, Python or Java. A computer program or source 
+    code is more than a sequence of tokens and have quite different properties than that of
+    text written in natural languages. However, just like we can mine a huge corpora of
+    natural language text and discover interesting patters using machine learning that is 
+    possible for software repositories also. There are multiple challenges in applying 
+    machine learning on source code directly. The project discussed here is inspired from 
+    models of natural language processing and outlines a road-map for applying machine learning on 
+    source code.  
+
+
+
 # Big Code : What it is ?
   - It is prototype pipeline to apply machine learning on source code. It has five main programs:
 
