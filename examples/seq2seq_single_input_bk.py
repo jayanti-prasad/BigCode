@@ -2,25 +2,25 @@ import os
 import sys
 import argparse  
 import numpy as np
-import tensorflow.compat.v1.keras as keras 
-from  tensorflow.compat.v1.keras.layers import Input, Embedding, BatchNormalization, GRU, Dense 
-from  tensorflow.compat.v1.keras.models import Model 
-from  tensorflow.compat.v1.keras.callbacks import  
-
+import tensorflow.compat.v1.keras.layers as layers
+import tensorflow.compat.v1.keras.models as models
+import tensorflow.compat.v1.keras.utils  as utils
+import tensorflow.compat.v1.keras.optimizers as optimizers
+import tensorflow.compat.v1.keras.callbacks as callbacks
 
 def get_encoder_model (cfg):
-    encoder_inputs  = Input(shape=(cfg.len_input_seq,), 
+    encoder_inputs  = layers.Input(shape=(cfg.len_input_seq,), 
        name='Encoder-Input')
 
-    x = keras.layers.Embedding(cfg.num_input_tokens, cfg.latent_dim,
+    x = layers.Embedding(cfg.num_input_tokens, cfg.latent_dim,
        name='Encoder-Embedding', mask_zero=False) (encoder_inputs)
 
-    x = keras.layers.BatchNormalization(name='Encoder-Batchnorm-1')(x)
+    x = layers.BatchNormalization(name='Encoder-Batchnorm-1')(x)
 
-    _, state_h = keras.layers.GRU(cfg.latent_dim, return_state=True,\
+    _, state_h = layers.GRU(cfg.latent_dim, return_state=True,\
        name='Encoder-Last-GRU')(x)
 
-    encoder_model = keras.models.Model(inputs=encoder_inputs,
+    encoder_model = models.Model(inputs=encoder_inputs,
        outputs=state_h, name='Encoder-Model')
     
     encoder_outputs = encoder_model(encoder_inputs)
@@ -30,40 +30,40 @@ def get_encoder_model (cfg):
 
 def get_model (cfg, encoder_inputs, encoder_outputs):
  
-    decoder_inputs = keras.layers.Input(shape=(None,), 
+    decoder_inputs = layers.Input(shape=(None,), 
        name='Decoder-Input')  # for teacher forcing
 
-    dec_emb = keras.layers.Embedding(cfg.num_input_tokens, cfg.latent_dim,
+    dec_emb = layers.Embedding(cfg.num_input_tokens, cfg.latent_dim,
        name='Decoder-Embedding', mask_zero=False)(decoder_inputs)
 
-    dec_bn = keras.layers.BatchNormalization(name='Decoder-Batchnorm-1')(dec_emb)
+    dec_bn = layers.BatchNormalization(name='Decoder-Batchnorm-1')(dec_emb)
 
-    decoder_gru = keras.layers.GRU(cfg.latent_dim, return_state=True,
+    decoder_gru = layers.GRU(cfg.latent_dim, return_state=True,
        return_sequences=True, name='Decoder-GRU')
 
     decoder_gru_output, _ = decoder_gru(dec_bn, initial_state=encoder_outputs)
 
-    x = keras.layers.BatchNormalization(name='Decoder-Batchnorm-2')(decoder_gru_output)
-    decoder_dense = keras.layers.Dense(cfg.num_output_tokens, 
+    x = layers.BatchNormalization(name='Decoder-Batchnorm-2')(decoder_gru_output)
+    decoder_dense = layers.Dense(cfg.num_output_tokens, 
        activation='softmax', name='Final-Output-Dense')
 
     decoder_outputs = decoder_dense(x)
 
-    model = keras.models.Model([encoder_inputs, decoder_inputs], decoder_outputs)    
+    model = models.Model([encoder_inputs, decoder_inputs], decoder_outputs)    
  
     return model 
 
 
 def fit_model (cfg, model, X, Y):
 
-    model.compile(optimizer=keras.optimizers.Nadam(lr=0.01),
+    model.compile(optimizer=optimizers.Nadam(lr=0.01),
            loss='sparse_categorical_crossentropy',metrics=['acc'])
 
     encoder_input_data = X
     decoder_input_data = Y[:, :-1]
     decoder_output_data = Y[:, 1:]
     
-    model_checkpoint = keras.callbacks.ModelCheckpoint(cfg.workspace + os.sep + 'model.hdf5',
+    model_checkpoint = callbacks.ModelCheckpoint(cfg.workspace + os.sep + 'model.hdf5',
          monitor='val_loss', save_best_only=True, period=1)
 
 
@@ -101,11 +101,11 @@ if __name__ == "__main__":
     encoder_model, encoder_inputs, encoder_outputs  = get_encoder_model (cfg)
 
     print(encoder_model.summary())
-    keras.utils.plot_model(encoder_model, to_file = cfg.workspace + os.sep + "encoder.png")
+    utils.plot_model(encoder_model, to_file = cfg.workspace + os.sep + "encoder.png")
 
     model = get_model (cfg, encoder_inputs, encoder_outputs)  
     print(model.summary())
-    keras.utils.plot_model(model, to_file = cfg.workspace + os.sep + "model.png")
+    utils.plot_model(model, to_file = cfg.workspace + os.sep + "model.png")
  
     # create fake data
     X  =  np.random.randint(cfg.num_input_tokens,
