@@ -32,7 +32,7 @@ def run(cfg, p):
 
     p['project_name'] = p['git_url'].split('/')[-1] 
     p['org_name'] = p['git_url'].split('/')[-2] 
-
+    p['project_url'] = p['git_url']
     file_prefix = p['org_name'] + "_" + p['project_name']
 
     commits_data_file = cfg.output_dir() + os.sep + file_prefix + "_data" + ".csv"
